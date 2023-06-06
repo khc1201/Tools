@@ -1,0 +1,88 @@
+'Add Reference to Microsoft Scripting Runtime Library
+
+Sub Convert()
+    Dim sht As Worksheet
+    Dim rng As Range
+    Dim items As New Collection
+    Dim item As New Dictionary
+    Dim r As Long, c As Integer
+    Dim cat() As Variant
+    Dim fname As String
+    Dim handle As Integer
+    Dim Json As String
+    Dim startRow As Long
+    
+    '//유효성 검증 - data 시트 존재 여부
+    Dim SheetName As String
+    Dim SheetExists As Boolean
+    SheetName = "data"
+    SheetExists = False
+    With ThisWorkbook
+        'Check if the Sheet exists
+        For Each ws In .Worksheets
+            If ws.Name = SheetName Then
+                SheetExists = True
+                Exit For
+            End If
+        Next
+        '// data 시트가 존재하지 않는 경우 경고 메시지를 출력하고 매크로 종료
+        If SheetExists = False Then
+            MsgBox "Error #01: The sheet name of 'data' cannot be found.", vbCritical: Exit Sub
+        End If
+    End With
+    
+
+    Set sht = ThisWorkbook.Worksheets(SheetName)
+
+    '//A열에서 "ID"라는 텍스트를 찾은 후, 해당 텍스트의 행부터 시작
+    startRow = sht.Columns("A").Find(What:="ID", LookIn:=xlValues).Row
+
+    '//첫 행 (카테고리)
+    cat = sht.Rows(startRow).Value
+
+    '//1열 셀 순환
+    For Each rng In sht.Range("A" & startRow + 1 & ":A" & sht.UsedRange.Rows.Count + startRow - 1).Cells
+        r = r + 1
+        If InStr(rng.Value, "//") = 0 Then
+            For c = 1 To UBound(cat, 2)
+                '//각 행을 item Dictionary에 추가
+                item(cat(1, c)) = rng.Offset(, c - 1).Value
+            Next c
+
+            '//각 행Dictionary 를 items Collection에 추가
+            items.Add item
+            Set item = Nothing 'Collection 초기화
+        End If
+    Next rng
+    
+    '//Items를 Json 문자열로 변환
+    Json = JsonConverter.ConvertToJson(items, Whitespace:=4)
+    
+    '카테고리 이름에 따옴표 제거
+    For c = 1 To UBound(cat, 2)
+        Json = Replace(Json, """" & cat(1, c) & """:", cat(1, c) & ":")
+    Next c
+
+    ' JSON 파일을 저장하는 위치를 원본 엑셀 파일이 존재하는 디렉토리 내부의 "json" 폴더로 지정
+    ' 만약 해당 폴더가 없다면 "json" 이름의 폴더를 만듦
+    Dim jsonFolder As String
+    jsonFolder = ThisWorkbook.Path & "\json\"
+    If Dir(jsonFolder, vbDirectory) = "" Then
+        MkDir jsonFolder
+    End If
+
+    '//JSON 파일에 저장 (유니코드(서명 있는 utf-8) - 코드페이지 65001 로 인코딩하여 저장)
+    ' .xlsm 확장자 제거 후 JSON 파일로 저장
+    fname = jsonFolder & Replace(ThisWorkbook.Name, ".xlsm", "") & ".json"
+    
+    With CreateObject("ADODB.Stream")
+        .Type = 2 'text/string data type
+        .Charset = "utf-8"
+        .Open
+        .WriteText Json
+        .SaveToFile fname, 2 'overwrite file if it exists
+        .Close
+    End With
+    
+    MsgBox "Item Count: " & items.Count, vbInformation, "Convert Complete"
+End Sub
