@@ -1,7 +1,6 @@
 ﻿[
     {
         ID: 1,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 1,
         ValueB: "\uD14D\uC2A4\uD2B8 1",
         ValueC: 0.1,
@@ -9,7 +8,6 @@
     },
     {
         ID: 2,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 2,
         ValueB: "\uD14D\uC2A4\uD2B8 2",
         ValueC: 0.2,
@@ -17,7 +15,6 @@
     },
     {
         ID: 3,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 3,
         ValueB: "\uD14D\uC2A4\uD2B8 3",
         ValueC: 0.3,
@@ -25,7 +22,6 @@
     },
     {
         ID: 4,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 4,
         ValueB: "\uD14D\uC2A4\uD2B8 4",
         ValueC: 0.4,
@@ -33,7 +29,6 @@
     },
     {
         ID: 5,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 5,
         ValueB: "\uD14D\uC2A4\uD2B8 5",
         ValueC: 0.5,
@@ -41,7 +36,6 @@
     },
     {
         ID: 6,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 6,
         ValueB: "\uD14D\uC2A4\uD2B8 6",
         ValueC: 0.6,
@@ -49,7 +43,6 @@
     },
     {
         ID: 7,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 7,
         ValueB: "\uD14D\uC2A4\uD2B8 7",
         ValueC: 0.7,
@@ -57,7 +50,6 @@
     },
     {
         ID: 8,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 8,
         ValueB: "\uD14D\uC2A4\uD2B8 8",
         ValueC: 0.8,
@@ -65,7 +57,6 @@
     },
     {
         ID: 9,
-        //Comment: "\uB370\uC774\uD130",
         ValueA: 9,
         ValueB: "\uD14D\uC2A4\uD2B8 9",
         ValueC: 0.9,

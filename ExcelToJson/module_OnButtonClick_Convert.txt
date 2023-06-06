@@ -25,7 +25,7 @@ Sub Convert()
                 Exit For
             End If
         Next
-        '// data 시트가 존재하지 않는 경우 경고 메시지를 출력하고 매크로 종료
+        '//Error #01 :data 시트가 존재하지 않는 경우 경고 메시지를 출력하고 매크로 종료
         If SheetExists = False Then
             MsgBox "Error #01: The sheet name of 'data' cannot be found.", vbCritical: Exit Sub
         End If
@@ -34,9 +34,14 @@ Sub Convert()
 
     Set sht = ThisWorkbook.Worksheets(SheetName)
 
-    '//A열에서 "ID"라는 텍스트를 찾은 후, 해당 텍스트의 행부터 시작
-    startRow = sht.Columns("A").Find(What:="ID", LookIn:=xlValues).Row
-
+    '//Error #02 :만약 sht에 "ID"가 없는 경우 경고 메시지를 출력하고 매크로 종료
+    If sht.Columns("A").Find(What:="ID", LookIn:=xlValues, LookAt:=xlWhole, MatchCase:=False) Is Nothing Then
+        MsgBox "Error #02: The value 'ID' cannot be found in column A.", vbCritical
+        Exit Sub
+    Else
+        startRow = sht.Columns("A").Find(What:="ID", LookIn:=xlValues).Row
+    End If
+    
     '//첫 행 (카테고리)
     cat = sht.Rows(startRow).Value
 
@@ -46,10 +51,12 @@ Sub Convert()
         If InStr(rng.Value, "//") = 0 Then
             For c = 1 To UBound(cat, 2)
                 '//각 행을 item Dictionary에 추가
-                item(cat(1, c)) = rng.Offset(, c - 1).Value
+                If InStr(sht.Cells(startRow, c).Value, "//") = 0 Then
+                    item(cat(1, c)) = rng.Offset(, c - 1).Value
+                End If
             Next c
-
-            '//각 행Dictionary 를 items Collection에 추가
+    
+            '//각 행 Dictionary 를 items Collection에 추가
             items.Add item
             Set item = Nothing 'Collection 초기화
         End If
